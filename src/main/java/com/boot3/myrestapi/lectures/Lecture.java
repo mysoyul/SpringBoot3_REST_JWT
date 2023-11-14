@@ -1,6 +1,5 @@
 package com.boot3.myrestapi.lectures;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,16 +21,12 @@ public class Lecture {
 
     private String description;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime beginEnrollmentDateTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime closeEnrollmentDateTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime beginLectureDateTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime endLectureDateTime;
     
     private String location;
