@@ -38,7 +38,7 @@ public class LectureReqDto {
 
     private String location;
 
-    @Min(0)
+    @Min(0) @Digits(integer = 3, fraction = 0)
     private int basePrice;
 
     @Min(0) @Max(500)
