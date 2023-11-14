@@ -1,5 +1,7 @@
 package com.boot3.myrestapi.lectures;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,14 +12,26 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode(of="id")
+@Entity
 public class Lecture {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(nullable = false)
     private String name;
+
     private String description;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime beginEnrollmentDateTime;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime closeEnrollmentDateTime;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime beginLectureDateTime;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime endLectureDateTime;
     
     private String location;
@@ -27,5 +41,7 @@ public class Lecture {
     private boolean offline;
 
     private boolean free;
+
+    @Enumerated(EnumType.STRING)
     private final LectureStatus lectureStatus = LectureStatus.DRAFT;
 }    
