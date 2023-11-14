@@ -1,10 +1,7 @@
 package com.boot3.myrestapi.lectures.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +16,10 @@ import java.time.LocalDateTime;
 public class LectureReqDto {
     @NotBlank(message = "Name은 필수 입력 항목 입니다.")
     private String name;
+
     @NotEmpty
     private String description;
+
     @NotNull
     @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime beginEnrollmentDateTime;
@@ -38,9 +37,11 @@ public class LectureReqDto {
     private LocalDateTime endLectureDateTime;
 
     private String location;
+
     @Min(0)
     private int basePrice;
-    @Min(0)
+
+    @Min(0) @Max(500)
     private int maxPrice;
 
     @Min(10)
