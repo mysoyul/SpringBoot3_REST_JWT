@@ -1,4 +1,4 @@
-package com.boot3.myrestapi.common.serializer;
+package com.boot3.myrestapi.common.resource;
 
 import java.io.IOException;
 
