@@ -44,6 +44,8 @@ public class LectureController {
         }
 
         Lecture lecture = modelMapper.map(lectureReqDto, Lecture.class);
+        //offline, free 값을 update
+        lecture.update();
         Lecture addLecture = this.lectureRepository.save(lecture);
 
         WebMvcLinkBuilder selfLinkBuilder =
