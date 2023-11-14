@@ -32,7 +32,7 @@ public class LectureController {
                                            Errors errors) {
         if(errors.hasErrors()) {
             //status code 400
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
         Lecture lecture = modelMapper.map(lectureReqDto, Lecture.class);
         Lecture addLecture = this.lectureRepository.save(lecture);
