@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface LectureRepository extends JpaRepository<Lecture, Integer> {
     List<Lecture> findByName(String name);
-    List<Lecture> findByBeginLectureDateTimeAfterAndEndLectureDateTimeBefore(LocalDateTime beginTime,
+    List<Lecture> findAllByBeginLectureDateTimeAfterAndEndLectureDateTimeBefore(LocalDateTime beginTime,
                                                                              LocalDateTime endTime);
 }
