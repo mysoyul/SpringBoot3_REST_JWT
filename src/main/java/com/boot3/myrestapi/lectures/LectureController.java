@@ -35,12 +35,12 @@ public class LectureController {
         //입력항목 검증
         if(errors.hasErrors()) {
             //status code 400
-            return ResponseEntity.badRequest().body(errors);
+            return getErrors(errors);
         }
         //biz로직과 관련된 입력항목 검증
         this.lectureValidator.validate(lectureReqDto, errors);
         if(errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return getErrors(errors);
         }
 
         Lecture lecture = modelMapper.map(lectureReqDto, Lecture.class);
@@ -50,5 +50,9 @@ public class LectureController {
                 WebMvcLinkBuilder.linkTo(LectureController.class).slash(addLecture.getId());
         URI createUri = selfLinkBuilder.toUri();
         return ResponseEntity.created(createUri).body(addLecture);
+    }
+
+    private static ResponseEntity<Errors> getErrors(Errors errors) {
+        return ResponseEntity.badRequest().body(errors);
     }
 }
