@@ -6,11 +6,14 @@ import com.boot3.myrestapi.common.exception.SystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,15 +39,25 @@ public class DefaultExceptionAdvice {
         return new ResponseEntity<>(result, e.getHttpStatus());
     }
 
-    //숫자타입의 값에 문자열타입의 값을 입력으로 받았을때 발생하는 오류
+    //숫자타입의 값에 문자열 타입의 값을 입력으로 받았을 때 발생하는 오류
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    protected ResponseEntity<Object> handleException(HttpMessageNotReadableException e) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("message", e.getMessage());
-        result.put("httpStatus", HttpStatus.BAD_REQUEST.value());
+    protected ProblemDetail handleException(HttpMessageNotReadableException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(400);
+        problemDetail.setTitle("숫자 타입의 값만 입력가능 합니다.");
+        problemDetail.setDetail(e.getMessage());
+        problemDetail.setProperty("오류발생시간", LocalDateTime.now());
 
-        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        return problemDetail;
     }
+
+//    protected ResponseEntity<Object> handleException(HttpMessageNotReadableException e) {
+//        Map<String, Object> result = new HashMap<String, Object>();
+//        result.put("message", e.getMessage());
+//        result.put("httpStatus", HttpStatus.BAD_REQUEST.value());
+//
+//        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+//    }
+
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception e) {
