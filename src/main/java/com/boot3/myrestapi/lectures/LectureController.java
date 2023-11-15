@@ -6,6 +6,8 @@ import com.boot3.myrestapi.lectures.dto.LectureReqDto;
 import com.boot3.myrestapi.lectures.dto.LectureResDto;
 import com.boot3.myrestapi.lectures.dto.LectureResource;
 import com.boot3.myrestapi.lectures.validator.LectureValidator;
+import com.boot3.myrestapi.security.userinfo.UserInfo;
+import com.boot3.myrestapi.security.userinfo.annotation.CurrentUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -89,7 +91,9 @@ public class LectureController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<?> queryLectures(Pageable pageable, PagedResourcesAssembler<LectureResDto> assembler) {
+    public ResponseEntity<?> queryLectures(Pageable pageable,
+                                           PagedResourcesAssembler<LectureResDto> assembler,
+                                           @CurrentUser UserInfo currentUser) {
         Page<Lecture> lecturePage = this.lectureRepository.findAll(pageable);
         //Page<Lecture> => Page<LectureResDto>
         Page<LectureResDto> lectureResDtoPage =
@@ -111,13 +115,17 @@ public class LectureController {
         PagedModel<LectureResource> pagedModel =
                 //assembler.toModel(lectureResDtoPage, resDto -> new LectureResource(resDto));
                 assembler.toModel(lectureResDtoPage, LectureResource::new);
+        if(currentUser != null) {
+            pagedModel.add(linkTo(LectureController.class).withRel("create-Lecture"));
+        }
         return ResponseEntity.ok(pagedModel);
     }
 
 
     @PostMapping
     public ResponseEntity<?> createLecture(@RequestBody @Valid LectureReqDto lectureReqDto,
-                                           Errors errors) {
+                                           Errors errors,
+                                           @CurrentUser UserInfo currentUser) {
         //입력항목 검증
         if(errors.hasErrors()) {
             //status code 400
@@ -133,6 +141,8 @@ public class LectureController {
         Lecture lecture = modelMapper.map(lectureReqDto, Lecture.class);
         //offline, free 값을 update
         lecture.update();
+        //Lecture와 UserInfo 연관관계 설정
+        lecture.setUserInfo(currentUser);
         Lecture addLecture = this.lectureRepository.save(lecture);
         //Entity -> ResDto
         LectureResDto lectureResDto = modelMapper.map(addLecture, LectureResDto.class);
