@@ -38,7 +38,7 @@ public class Lecture {
     private boolean free;
 
     @Enumerated(EnumType.STRING)
-    private final LectureStatus lectureStatus = LectureStatus.DRAFT;
+    private LectureStatus lectureStatus = LectureStatus.DRAFT;
 
     public void update() {
         // Update free
