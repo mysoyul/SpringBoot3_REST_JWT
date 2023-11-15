@@ -18,4 +18,7 @@ public class ErrorsResource extends EntityModel<Errors> {
         add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
     }
 
+    public Errors getErrors() {
+        return errors;
+    }
 }
