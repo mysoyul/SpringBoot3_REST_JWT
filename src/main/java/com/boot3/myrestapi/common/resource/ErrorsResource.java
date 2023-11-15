@@ -9,7 +9,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class ErrorsResource extends EntityModel<Errors> {
-    @JsonUnwrapped
+    //@JsonUnwrapped
     private Errors errors;
 
     public ErrorsResource(Errors content) {
