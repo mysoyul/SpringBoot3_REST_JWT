@@ -57,14 +57,14 @@ public class SecurityConfig {
         return   //http.csrf(AbstractHttpConfigurer::disable)
                 http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/users/welcome").permitAll()
+                    auth.requestMatchers("/users/welcome","/login").permitAll()
                             .requestMatchers("/api/lectures/**").authenticated();
                 })
                 .formLogin(withDefaults())
-                        .exceptionHandling(authManager -> authManager
-                                .authenticationEntryPoint(authenticationEntryPoint())
-                                .accessDeniedHandler(accessDeniedHandler())
-                        )
+//                        .exceptionHandling(authManager -> authManager
+//                                .authenticationEntryPoint(authenticationEntryPoint())
+//                                .accessDeniedHandler(accessDeniedHandler())
+//                        )
                 .build();
     }
 }

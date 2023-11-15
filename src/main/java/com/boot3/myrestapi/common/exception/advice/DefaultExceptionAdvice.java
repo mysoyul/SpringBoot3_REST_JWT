@@ -66,10 +66,10 @@ public class DefaultExceptionAdvice {
 //        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 //    }
 
-    @ExceptionHandler(value = AccessDeniedException.class)
-    public void accessDeniedExceptionHandler(Exception e) {
-        throw new AccessDeniedException(e.getMessage());
-    }
+//    @ExceptionHandler(value = AccessDeniedException.class)
+//    public void accessDeniedExceptionHandler(Exception e) {
+//        throw new AccessDeniedException(e.getMessage());
+//    }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception e) {
