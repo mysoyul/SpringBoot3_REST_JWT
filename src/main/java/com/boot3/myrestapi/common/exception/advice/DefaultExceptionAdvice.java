@@ -73,13 +73,10 @@ public class DefaultExceptionAdvice {
     }
 
     @ExceptionHandler(value = BadCredentialsException.class)
-    public ResponseEntity<Object> badCredentialExceptionHandler(BadCredentialsException e){
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("message", e.getMessage());
-        result.put("httpStatus", HttpStatus.UNAUTHORIZED.value());
-
-        return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+    public void badCredentialExceptionHandler(BadCredentialsException e){
+        throw new BadCredentialsException(e.getMessage());
     }
+
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception e) {
