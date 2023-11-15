@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
-@Component
+//@Component
 public class LectureInsertRunner implements ApplicationRunner {
-	@Autowired
+	//@Autowired
     LectureRepository lectureRepository;
 	
 	@Override
