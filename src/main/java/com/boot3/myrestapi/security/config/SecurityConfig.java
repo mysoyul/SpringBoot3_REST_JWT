@@ -57,7 +57,7 @@ public class SecurityConfig {
         return   //http.csrf(AbstractHttpConfigurer::disable)
                 http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/users/welcome","/login").permitAll()
+                    auth.requestMatchers("/users/**").permitAll()
                             .requestMatchers("/api/lectures/**").authenticated();
                 })
                 .formLogin(withDefaults())
