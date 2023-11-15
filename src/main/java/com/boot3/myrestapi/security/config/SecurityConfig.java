@@ -83,11 +83,11 @@ public class SecurityConfig {
                     auth.requestMatchers("/users/**").permitAll()
                             .requestMatchers("/api/lectures/**").authenticated();
                 })
-                .formLogin(withDefaults())
-//                        .exceptionHandling(authManager -> authManager
-//                                .authenticationEntryPoint(authenticationEntryPoint())
-//                                .accessDeniedHandler(accessDeniedHandler())
-//                        )
+//                .formLogin(withDefaults())
+                        .exceptionHandling(authManager -> authManager
+                                .authenticationEntryPoint(authenticationEntryPoint())
+                                .accessDeniedHandler(accessDeniedHandler())
+                        )
                 .build();
     }
 }
