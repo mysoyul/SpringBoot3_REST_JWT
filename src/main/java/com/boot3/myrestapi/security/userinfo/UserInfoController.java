@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/users")
 public class UserInfoController {
@@ -30,6 +32,7 @@ public class UserInfoController {
 
     @PostMapping("/new")
     public String addNewUser(@RequestBody UserInfo userInfo){
+        userInfo.setUserId(UUID.randomUUID().toString());
         userInfo.setPassword(
                 passwordEncoder.encode(userInfo.getPassword()));
         UserInfo savedUserInfo = repository.save(userInfo);
@@ -44,7 +47,9 @@ public class UserInfoController {
                         authRequest.getPassword()
                 ));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getEmail());
+            UserInfo userInfo = repository.findByEmail(authRequest.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("user not found " + authRequest.getEmail()));
+            return jwtService.generateToken(userInfo.getUserId());
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }

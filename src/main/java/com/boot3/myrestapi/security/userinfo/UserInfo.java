@@ -23,4 +23,7 @@ public class UserInfo {
     private String password;
 
     private String roles;
+
+    @Column(nullable = false, unique = true)
+    private String userId;
 }
