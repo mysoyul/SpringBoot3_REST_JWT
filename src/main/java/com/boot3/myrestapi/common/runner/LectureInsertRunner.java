@@ -18,11 +18,13 @@ public class LectureInsertRunner implements ApplicationRunner {
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		IntStream.range(0, 15).forEach(this::generateLecture);
+		IntStream.range(0, 15) //IntStream
+                //.forEach(idx -> generateLecture(idx));
+                .forEach(this::generateLecture);
 	}
-    private Lecture generateLecture(int index) {
+    private void generateLecture(int index) {
         Lecture lecture = buildLecture(index);
-        return this.lectureRepository.save(lecture);
+        this.lectureRepository.save(lecture);
     }
     private Lecture buildLecture(int index) {
         return Lecture.builder()
