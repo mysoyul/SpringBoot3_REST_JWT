@@ -10,7 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -35,9 +38,15 @@ public class LectureController {
 //    }
 
     @GetMapping
-    public ResponseEntity<?> queryLectures(Pageable pageable) {
+    public ResponseEntity<?> queryLectures(Pageable pageable, PagedResourcesAssembler<LectureResDto> assembler) {
         Page<Lecture> lecturePage = this.lectureRepository.findAll(pageable);
-        return ResponseEntity.ok(lecturePage);
+        //Page<Lecture> => Page<LectureResDto>
+        Page<LectureResDto> lectureResDtoPage =
+                //Page 인터페이스 map(Function)
+                lecturePage.map(lecture -> modelMapper.map(lecture, LectureResDto.class));
+
+        PagedModel<EntityModel<LectureResDto>> pagedModel = assembler.toModel(lectureResDtoPage);
+        return ResponseEntity.ok(pagedModel);
     }
 
 
