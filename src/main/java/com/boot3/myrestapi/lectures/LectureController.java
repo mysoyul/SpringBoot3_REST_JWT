@@ -1,5 +1,6 @@
 package com.boot3.myrestapi.lectures;
 
+import com.boot3.myrestapi.common.exception.BusinessException;
 import com.boot3.myrestapi.common.resource.ErrorsResource;
 import com.boot3.myrestapi.lectures.dto.LectureReqDto;
 import com.boot3.myrestapi.lectures.dto.LectureResDto;
@@ -16,6 +17,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +45,8 @@ public class LectureController {
     public ResponseEntity<?> getLecture(@PathVariable Integer id) {
         Optional<Lecture> optionalLecture = this.lectureRepository.findById(id);
         if(optionalLecture.isEmpty()) {
-            return ResponseEntity.notFound().build();
+             //return ResponseEntity.notFound().build();
+             throw new BusinessException(id + " Lecture Not Found", HttpStatus.NOT_FOUND);
         }
 
         Lecture lecture = optionalLecture.get();
