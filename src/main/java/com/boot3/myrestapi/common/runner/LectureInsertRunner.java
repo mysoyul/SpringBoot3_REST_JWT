@@ -24,6 +24,7 @@ public class LectureInsertRunner implements ApplicationRunner {
 	}
     private void generateLecture(int index) {
         Lecture lecture = buildLecture(index);
+        lecture.update();
         this.lectureRepository.save(lecture);
     }
     private Lecture buildLecture(int index) {
@@ -38,8 +39,6 @@ public class LectureInsertRunner implements ApplicationRunner {
                     .maxPrice(200)
                     .limitOfEnrollment(100)
                     .location(index + " 강의장")
-                    .free(false)
-                    .offline(true)
                     .lectureStatus(LectureStatus.DRAFT)
                     .build();
     }
