@@ -146,6 +146,7 @@ public class LectureController {
         Lecture addLecture = this.lectureRepository.save(lecture);
         //Entity -> ResDto
         LectureResDto lectureResDto = modelMapper.map(addLecture, LectureResDto.class);
+        lectureResDto.setEmail(addLecture.getUserInfo().getEmail());
 
         WebMvcLinkBuilder selfLinkBuilder =
                 linkTo(LectureController.class).slash(lectureResDto.getId());
