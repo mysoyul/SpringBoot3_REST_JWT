@@ -45,7 +45,17 @@ public class LectureController {
                 //Page 인터페이스 map(Function)
                 lecturePage.map(lecture -> modelMapper.map(lecture, LectureResDto.class));
 
-        PagedModel<EntityModel<LectureResDto>> pagedModel = assembler.toModel(lectureResDtoPage);
+        //PagedModel<EntityModel<LectureResDto>> pagedModel = assembler.toModel(lectureResDtoPage);
+        /*
+        public <R extends org.springframework.hateoas.RepresentationModel<?>>
+        org.springframework.hateoas.PagedModel<R> toModel(Page<T> page,
+             org.springframework.hateoas.server.RepresentationModelAssembler<T,R> assembler)
+
+         RepresentationModelAssembler 의 추상 메서드 D toModel(T entity)
+         D, which extends RepresentationModel
+         */
+        PagedModel<LectureResource> pagedModel =
+                assembler.toModel(lectureResDtoPage, resDto -> new LectureResource(resDto));
         return ResponseEntity.ok(pagedModel);
     }
 
