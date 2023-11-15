@@ -60,9 +60,9 @@ public class LectureController {
         }
 
         Lecture existingLecture = optionalLecture.get();
-        existingLecture.update();
         //ReqDto -> Entity
         this.modelMapper.map(lectureReqDto, existingLecture);
+        existingLecture.update();
         Lecture savedLecture = this.lectureRepository.save(existingLecture);
         //Entity -> ResDto
         LectureResDto lectureResDto = modelMapper.map(savedLecture, LectureResDto.class);
