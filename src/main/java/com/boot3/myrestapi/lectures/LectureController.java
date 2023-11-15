@@ -20,6 +20,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
@@ -46,8 +47,9 @@ public class LectureController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLecture(@PathVariable Integer id,
-                                        @RequestBody @Valid LectureReqDto lectureReqDto,
-                                        Errors errors) {
+                                           @RequestBody @Valid LectureReqDto lectureReqDto,
+                                           Errors errors,
+                                           @CurrentUser UserInfo currentUser) {
         Optional<Lecture> optionalLecture = lectureRepository.findById(id);
         if (optionalLecture.isEmpty()) {
             throw new BusinessException(id + " Lecture Not Found", HttpStatus.NOT_FOUND);
@@ -63,12 +65,17 @@ public class LectureController {
         }
 
         Lecture existingLecture = optionalLecture.get();
+        if((existingLecture.getUserInfo() != null) && (!existingLecture.getUserInfo().equals(currentUser))) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         //ReqDto -> Entity
         this.modelMapper.map(lectureReqDto, existingLecture);
         existingLecture.update();
         Lecture savedLecture = this.lectureRepository.save(existingLecture);
         //Entity -> ResDto
         LectureResDto lectureResDto = modelMapper.map(savedLecture, LectureResDto.class);
+        if(savedLecture.getUserInfo() != null)
+            lectureResDto.setEmail(savedLecture.getUserInfo().getEmail());
         //ResDto -> Resource
         LectureResource lectureResource = new LectureResource(lectureResDto);
         return ResponseEntity.ok(lectureResource);
@@ -78,19 +85,19 @@ public class LectureController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<?> getLecture(@PathVariable Integer id, @CurrentUser UserInfo currentUser) {
         Optional<Lecture> optionalLecture = this.lectureRepository.findById(id);
-        if(optionalLecture.isEmpty()) {
-             //return ResponseEntity.notFound().build();
-             throw new BusinessException(id + " Lecture Not Found", HttpStatus.NOT_FOUND);
+        if (optionalLecture.isEmpty()) {
+            //return ResponseEntity.notFound().build();
+            throw new BusinessException(id + " Lecture Not Found", HttpStatus.NOT_FOUND);
         }
 
         Lecture lecture = optionalLecture.get();
         LectureResDto lectureResDto = modelMapper.map(lecture, LectureResDto.class);
-        if(lecture.getUserInfo() != null)
+        if (lecture.getUserInfo() != null)
             lectureResDto.setEmail(lecture.getUserInfo().getEmail());
 
         LectureResource lectureResource = new LectureResource(lectureResDto);
         //인증토큰의 email과 Lecture가 참조하는 email주소가 같으면 update 링크를 제공하기
-        if((lecture.getUserInfo() != null) && (lecture.getUserInfo().equals(currentUser))) {
+        if ((lecture.getUserInfo() != null) && (lecture.getUserInfo().equals(currentUser))) {
             lectureResource.add(linkTo(LectureController.class)
                     .slash(lecture.getId()).withRel("update-lecture"));
         }
@@ -108,7 +115,7 @@ public class LectureController {
                 //Page 인터페이스 map(Function)
                 lecturePage.map(lecture -> {
                     LectureResDto lectureResDto = new LectureResDto();
-                    if(lecture.getUserInfo() != null){
+                    if (lecture.getUserInfo() != null) {
                         lectureResDto.setEmail(lecture.getUserInfo().getEmail());
                     }
                     modelMapper.map(lecture, lectureResDto);
@@ -130,7 +137,7 @@ public class LectureController {
         PagedModel<LectureResource> pagedModel =
                 //assembler.toModel(lectureResDtoPage, resDto -> new LectureResource(resDto));
                 assembler.toModel(lectureResDtoPage, LectureResource::new);
-        if(currentUser != null) {
+        if (currentUser != null) {
             pagedModel.add(linkTo(LectureController.class).withRel("create-Lecture"));
         }
         return ResponseEntity.ok(pagedModel);
@@ -142,13 +149,13 @@ public class LectureController {
                                            Errors errors,
                                            @CurrentUser UserInfo currentUser) {
         //입력항목 검증
-        if(errors.hasErrors()) {
+        if (errors.hasErrors()) {
             //status code 400
             return getErrors(errors);
         }
         //biz로직과 관련된 입력항목 검증
         this.lectureValidator.validate(lectureReqDto, errors);
-        if(errors.hasErrors()) {
+        if (errors.hasErrors()) {
             return getErrors(errors);
         }
 
