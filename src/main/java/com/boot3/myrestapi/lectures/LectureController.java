@@ -8,14 +8,13 @@ import com.boot3.myrestapi.lectures.validator.LectureValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -34,6 +33,13 @@ public class LectureController {
 //    public LectureController(LectureRepository lectureRepository) {
 //        this.lectureRepository = lectureRepository;
 //    }
+
+    @GetMapping
+    public ResponseEntity<?> queryLectures(Pageable pageable) {
+        Page<Lecture> lecturePage = this.lectureRepository.findAll(pageable);
+        return ResponseEntity.ok(lecturePage);
+    }
+
 
     @PostMapping
     public ResponseEntity<?> createLecture(@RequestBody @Valid LectureReqDto lectureReqDto,
