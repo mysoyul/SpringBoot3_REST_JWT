@@ -61,6 +61,10 @@ public class SecurityConfig {
                             .requestMatchers("/api/lectures/**").authenticated();
                 })
                 .formLogin(withDefaults())
+                        .exceptionHandling(authManager -> authManager
+                                .authenticationEntryPoint(authenticationEntryPoint())
+                                .accessDeniedHandler(accessDeniedHandler())
+                        )
                 .build();
     }
 }
