@@ -47,22 +47,26 @@ public class LectureController {
                                         Errors errors) {
         Optional<Lecture> optionalLecture = lectureRepository.findById(id);
         if (optionalLecture.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new BusinessException(id + " Lecture Not Found", HttpStatus.NOT_FOUND);
         }
 
         if (errors.hasErrors()) {
             return getErrors(errors);
         }
+
         lectureValidator.validate(lectureReqDto, errors);
         if (errors.hasErrors()) {
             return getErrors(errors);
         }
 
         Lecture existingLecture = optionalLecture.get();
+        existingLecture.update();
+        //ReqDto -> Entity
         this.modelMapper.map(lectureReqDto, existingLecture);
         Lecture savedLecture = this.lectureRepository.save(existingLecture);
+        //Entity -> ResDto
         LectureResDto lectureResDto = modelMapper.map(savedLecture, LectureResDto.class);
-
+        //ResDto -> Resource
         LectureResource lectureResource = new LectureResource(lectureResDto);
         return ResponseEntity.ok(lectureResource);
     }
