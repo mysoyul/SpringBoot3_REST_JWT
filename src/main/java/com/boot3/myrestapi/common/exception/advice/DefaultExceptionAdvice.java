@@ -22,13 +22,21 @@ public class DefaultExceptionAdvice {
 	private final Logger LOGGER = LoggerFactory.getLogger(DefaultExceptionAdvice.class);
 
     @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<Object> handleException(BusinessException e) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("message", "[안내] " + e.getMessage());
-        result.put("httpStatus", e.getHttpStatus().value());
+//    protected ResponseEntity<Object> handleException(BusinessException e) {
+//        Map<String, Object> result = new HashMap<String, Object>();
+//        result.put("message", "[안내] " + e.getMessage());
+//        result.put("httpStatus", e.getHttpStatus().value());
+//
+//        return new ResponseEntity<>(result, e.getHttpStatus());
+//    }
 
-        return new ResponseEntity<>(result, e.getHttpStatus());
+    protected ProblemDetail handleException(BusinessException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(404);
+        problemDetail.setTitle(e.getMessage());
+        problemDetail.setProperty("오류발생시간", LocalDateTime.now());
+        return problemDetail;
     }
+
     
     @ExceptionHandler(SystemException.class)
     protected ResponseEntity<Object> handleException(SystemException e) {
