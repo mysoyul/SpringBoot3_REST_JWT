@@ -41,6 +41,32 @@ public class LectureController {
 //        this.lectureRepository = lectureRepository;
 //    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateLecture(@PathVariable Integer id,
+                                        @RequestBody @Valid LectureReqDto lectureReqDto,
+                                        Errors errors) {
+        Optional<Lecture> optionalLecture = lectureRepository.findById(id);
+        if (optionalLecture.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (errors.hasErrors()) {
+            return getErrors(errors);
+        }
+        lectureValidator.validate(lectureReqDto, errors);
+        if (errors.hasErrors()) {
+            return getErrors(errors);
+        }
+
+        Lecture existingLecture = optionalLecture.get();
+        this.modelMapper.map(lectureReqDto, existingLecture);
+        Lecture savedLecture = this.lectureRepository.save(existingLecture);
+        LectureResDto lectureResDto = modelMapper.map(savedLecture, LectureResDto.class);
+
+        LectureResource lectureResource = new LectureResource(lectureResDto);
+        return ResponseEntity.ok(lectureResource);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getLecture(@PathVariable Integer id) {
         Optional<Lecture> optionalLecture = this.lectureRepository.findById(id);

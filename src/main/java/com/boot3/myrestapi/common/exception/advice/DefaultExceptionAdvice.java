@@ -29,7 +29,6 @@ public class DefaultExceptionAdvice {
 //
 //        return new ResponseEntity<>(result, e.getHttpStatus());
 //    }
-
     protected ProblemDetail handleException(BusinessException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(404);
         problemDetail.setTitle(e.getMessage());
