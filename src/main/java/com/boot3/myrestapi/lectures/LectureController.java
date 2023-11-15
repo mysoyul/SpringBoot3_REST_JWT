@@ -14,12 +14,14 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -37,6 +39,19 @@ public class LectureController {
 //        this.lectureRepository = lectureRepository;
 //    }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getLecture(@PathVariable Integer id) {
+        Optional<Lecture> optionalLecture = this.lectureRepository.findById(id);
+        if(optionalLecture.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Lecture lecture = optionalLecture.get();
+        LectureResDto lectureResDto = modelMapper.map(lecture, LectureResDto.class);
+        LectureResource lectureResource = new LectureResource(lectureResDto);
+        return ResponseEntity.ok(lectureResource);
+    }
+
     @GetMapping
     public ResponseEntity<?> queryLectures(Pageable pageable, PagedResourcesAssembler<LectureResDto> assembler) {
         Page<Lecture> lecturePage = this.lectureRepository.findAll(pageable);
@@ -47,15 +62,19 @@ public class LectureController {
 
         //PagedModel<EntityModel<LectureResDto>> pagedModel = assembler.toModel(lectureResDtoPage);
         /*
-        public <R extends org.springframework.hateoas.RepresentationModel<?>>
-        org.springframework.hateoas.PagedModel<R> toModel(Page<T> page,
-             org.springframework.hateoas.server.RepresentationModelAssembler<T,R> assembler)
-
-         RepresentationModelAssembler 의 추상 메서드 D toModel(T entity)
-         D, which extends RepresentationModel
+        PagedResourcesAssembler 의 toModel() 메서드
+            public <R extends org.springframework.hateoas.RepresentationModel<?>>
+            org.springframework.hateoas.PagedModel<R> toModel(Page<T> page,
+                 org.springframework.hateoas.server.RepresentationModelAssembler<T,R> assembler)
+        */
+        /*
+         RepresentationModelAssembler 의 추상 메서드
+           D toModel(T entity)
+           D, which extends RepresentationModel
          */
         PagedModel<LectureResource> pagedModel =
-                assembler.toModel(lectureResDtoPage, resDto -> new LectureResource(resDto));
+                //assembler.toModel(lectureResDtoPage, resDto -> new LectureResource(resDto));
+                assembler.toModel(lectureResDtoPage, LectureResource::new);
         return ResponseEntity.ok(pagedModel);
     }
 
