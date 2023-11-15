@@ -98,7 +98,14 @@ public class LectureController {
         //Page<Lecture> => Page<LectureResDto>
         Page<LectureResDto> lectureResDtoPage =
                 //Page 인터페이스 map(Function)
-                lecturePage.map(lecture -> modelMapper.map(lecture, LectureResDto.class));
+                lecturePage.map(lecture -> {
+                    LectureResDto lectureResDto = new LectureResDto();
+                    if(lecture.getUserInfo() != null){
+                        lectureResDto.setEmail(lecture.getUserInfo().getEmail());
+                    }
+                    modelMapper.map(lecture, lectureResDto);
+                    return lectureResDto;
+                });
 
         //PagedModel<EntityModel<LectureResDto>> pagedModel = assembler.toModel(lectureResDtoPage);
         /*
