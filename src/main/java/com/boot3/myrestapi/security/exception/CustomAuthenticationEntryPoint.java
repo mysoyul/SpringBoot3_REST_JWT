@@ -21,6 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             throws IOException, ServletException {
 
         res.setContentType("application/json;charset=UTF-8");
+        //Set response status code 401
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         // Create response content

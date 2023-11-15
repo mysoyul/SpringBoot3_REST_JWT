@@ -21,7 +21,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         // Set response content type to JSON
         response.setContentType("application/json;charset=UTF-8");
-        // Set response code
+        // Set response status code 403
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         // Create response content
