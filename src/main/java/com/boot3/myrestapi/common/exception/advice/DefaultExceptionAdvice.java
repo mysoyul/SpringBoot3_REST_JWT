@@ -10,6 +10,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -69,6 +70,15 @@ public class DefaultExceptionAdvice {
     @ExceptionHandler(value = AccessDeniedException.class)
     public void accessDeniedExceptionHandler(Exception e) {
         throw new AccessDeniedException(e.getMessage());
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ResponseEntity<Object> badCredentialExceptionHandler(BadCredentialsException e){
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("message", e.getMessage());
+        result.put("httpStatus", HttpStatus.UNAUTHORIZED.value());
+
+        return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
