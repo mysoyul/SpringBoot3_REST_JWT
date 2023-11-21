@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringBoot3RestApiApplication {
 
 	public static void main(String[] args) {
+
+		System.out.println("SpringBoot3RestApiApplication.main");
 		SpringApplication.run(SpringBoot3RestApiApplication.class, args);
 	}
 
